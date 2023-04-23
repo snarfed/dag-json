@@ -16,12 +16,13 @@ authors = [
 description = 'Python implemention of the IPLD DAG-JSON codec'
 readme = 'README.md'
 requires-python = '>=3.7'
-keywords = ['IPLD', 'DAG-JSON', 'codec', 'CID']
+keywords = ['DAG-JSON', 'IPLD', 'codec', 'CID']
 dependencies = [
     'multiformats>=0.2.0',
 ]
 classifiers = [
     'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.7',
     'License :: Public Domain',
     'Operating System :: OS Independent',
     'Intended Audience :: Developers',
