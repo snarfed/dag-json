@@ -15,7 +15,7 @@ import collections
 import json
 import os
 from pathlib import Path
-from unittest import TestCase
+from unittest import skip, TestCase
 
 from multiformats import CID, multibase, multihash
 import testmark
@@ -53,3 +53,15 @@ DagJsonTest = type('DagJsonTest', (TestCase,), {
      f'test_{name.replace("-", "_")}': create_test_fn(test)
      for name, test in tests.items()
 })
+
+
+@skip
+class NegativeDagJsonTest(TestCase):
+    """From the DAG-JSON cross-codec negative fixtures:
+    https://github.com/ipld/codec-fixtures/tree/abdc5b85251ad39f47dc5a264be354b3283c8b3b/negative-fixtures/dag-json
+
+    TODO
+    """
+    def test_duplicate_map_keys(self):
+         with self.assertRaises(ValueError):
+              print(dag_json.decode('{"foo":1,"foo":2,"bar":3}'))
