@@ -1,7 +1,7 @@
 dag-json [![Circle CI](https://circleci.com/gh/snarfed/dag-json.svg?style=svg)](https://circleci.com/gh/snarfed/dag-json) [![Coverage Status](https://coveralls.io/repos/github/snarfed/dag-json/badge.svg?branch=main)](https://coveralls.io/github/snarfed/dag-json?branch=master)
 ===
 
-Python implemention of the [IPLD](https://ipld.io/) [DAG-JSON codec](https://ipld.io/docs/codecs/known/dag-json/). Passes all of IPLD's [DAG-JSON cross-codec test fixtures](https://ipld.io/specs/codecs/dag-json/fixtures/cross-codec/).
+Python implemention of the [IPLD](https://ipld.io/) [DAG-JSON codec](https://ipld.io/docs/codecs/known/dag-json/). Uses the `CID` class from [`multiformats`](https://multiformats.readthedocs.io/). Passes all of IPLD's [DAG-JSON cross-codec test fixtures](https://ipld.io/specs/codecs/dag-json/fixtures/cross-codec/).
 
 Install from [PyPI](https://pypi.org/project/dag-json/) with `pip install dag-json`.
 
@@ -11,14 +11,39 @@ License: This project is placed in the public domain.
 * [Changelog](#changelog)
 * [Release instructions](#release-instructions)
 
+
 ## Usage
 
-TODO
+The `dag_json` module has two functions, `encode` and `decode`.
+* `encode` takes any IPLD-compatible native Python object - `int`, `float`, `str`, `bool`, `list`, `bytes`, or `multiformats.CID` - and returns it as DAG-JSON encoded `bytes`.
+* `decode` takes DAG-JSON encoded `bytes` and returns the corresponding native Python object.
+
+Here's example usage:
+
+```py
+>>> from dag_json import decode, encode
+>>> from multiformats import CID
+>>>
+>>> encoded = encode({
+    'foo': 'bar',
+    'data': b'hello world',
+    'link': CID.decode('QmUGhP2X8xo9dsj45vqx1H6i5WqPqLqmLQsHTTxd3ke8mp'),
+})
+>>> encoded
+b'{"data":{"/":{"bytes":"aGVsbG8gd29ybGQ"}},"foo":"bar","link":{"/":"QmUGhP2X8xo9dsj45vqx1H6i5WqPqLqmLQsHTTxd3ke8mp"}}'
+>>>
+>>> repr(decode(encoded))
+{
+    'data': b'hello world',
+    'foo': 'bar',
+    'link': CID('base58btc', 0, 'dag-pb', '12205822d187bd40b04cc8ae7437888ebf844efac1729e098c8816d585d0fcc42b5b'),
+}
+```
 
 
 ## Changelog
 
-### 0.1 - unreleased
+### 0.1 - 2023-04-23
 
 Initial release!
 
