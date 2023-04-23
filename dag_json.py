@@ -23,7 +23,7 @@ def decode(input):
       :class:`json.JSONDecodeError`
     """
     if isinstance(input, bytes):
-        input = bytes.decode()
+        input = input.decode()
 
     if isinstance(input, str):
         input = json.loads(input)
