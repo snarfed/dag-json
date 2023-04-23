@@ -36,6 +36,8 @@ def decode(input):
                     return CID.decode(input['/'])
                 elif (isinstance(input['/'], dict) and
                       input['/'].keys() == set(('bytes',))):
+                    # IPLD DAG-JSON base64-encoded bytes don't have padding, but
+                    # Python base64 lib expects it
                     return b64decode(input['/']['bytes'] + '==')
 
             # normal mapping
@@ -64,6 +66,7 @@ class DagJsonEncoder(json.JSONEncoder):
             assert val.version in (0, 1)
             return {'/': val.encode('base32') if val.version == 1 else val.encode()}
         elif isinstance(val, bytes):
+            # Python base64 lib emits padding, IPLD DAG-JSON bytes don't
             return {'/': {'bytes': b64encode(val).decode().rstrip('=')}}
 
         return super().default(val)
