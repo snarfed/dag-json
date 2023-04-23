@@ -1,7 +1,7 @@
 dag-json [![Circle CI](https://circleci.com/gh/snarfed/dag-json.svg?style=svg)](https://circleci.com/gh/snarfed/dag-json) [![Coverage Status](https://coveralls.io/repos/github/snarfed/dag-json/badge.svg?branch=main)](https://coveralls.io/github/snarfed/dag-json?branch=master)
 ===
 
-Python implemention of the [IPLD](https://ipld.io/) [DAG-JSON codec](https://ipld.io/docs/codecs/known/dag-json/). Uses the [`CID`](https://multiformats.readthedocs.io/en/latest/cid.html) class from [`multiformats`](https://multiformats.readthedocs.io/). Passes all of IPLD's [DAG-JSON cross-codec test fixtures](https://ipld.io/specs/codecs/dag-json/fixtures/cross-codec/).
+Python implementation of the [IPLD](https://ipld.io/) [DAG-JSON codec](https://ipld.io/docs/codecs/known/dag-json/). Uses the [`CID`](https://multiformats.readthedocs.io/en/latest/cid.html) class from [`multiformats`](https://multiformats.readthedocs.io/). Passes all of IPLD's [DAG-JSON cross-codec test fixtures](https://ipld.io/specs/codecs/dag-json/fixtures/cross-codec/).
 
 Install from [PyPI](https://pypi.org/project/dag-json/) with `pip install dag-json`.
 

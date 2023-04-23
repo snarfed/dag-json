@@ -13,7 +13,7 @@ version = '0.1'
 authors = [
     { name='Ryan Barrett', email='dag-json@ryanb.org' },
 ]
-description = 'Python implemention of the IPLD DAG-JSON codec'
+description = 'Python implementation of the IPLD DAG-JSON codec'
 readme = 'README.md'
 requires-python = '>=3.7'
 keywords = ['DAG-JSON', 'IPLD', 'codec', 'CID']
