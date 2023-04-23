@@ -4,6 +4,9 @@
 requires = ['setuptools>=61.0']
 build-backend = 'setuptools.build_meta'
 
+[tool.setuptools]
+py-modules = ['dag_json']
+
 [project]
 name = 'dag-json'
 version = '0.1'
