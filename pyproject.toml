@@ -30,6 +30,9 @@ classifiers = [
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
+[project.urls]
+'Homepage' = 'https://github.com/snarfed/dag-json'
+
 [project.optional-dependencies]
 tests = [
     'python-testmark>=1.0',
