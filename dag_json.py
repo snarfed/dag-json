@@ -1,0 +1,90 @@
+"""DAG-JSON encoder and decoder.
+
+https://ipld.io/docs/codecs/known/dag-json/
+https://ipld.io/specs/codecs/dag-json/spec/
+"""
+from base64 import b64decode, b64encode
+import json
+
+from multiformats import CID
+
+
+def decode(input):
+    """Decodes DAG-JSON encoded data.
+
+    Args:
+      input: bytes, str, or decoded JSON object
+
+    Returns:
+      decoded IPLD object
+
+    Raises:
+      ValueError
+      :class:`json.JSONDecodeError`
+    """
+    if isinstance(input, bytes):
+        input = bytes.decode()
+
+    if isinstance(input, str):
+        input = json.loads(input)
+
+    def _decode(input):
+        if isinstance(input, dict):
+            if input.keys() == set(('/',)):
+                if isinstance(input['/'], str):
+                    # link
+                    return CID.decode(input['/'])
+                elif (isinstance(input['/'], dict) and
+                      input['/'].keys() == set(('bytes',))):
+                    return b64decode(input['/']['bytes'] + '==')
+
+            # normal mapping
+            return {k: _decode(v) for k, v in input.items()}
+
+        if isinstance(input, list):
+            return [_decode(v) for v in input]
+
+        return input
+
+    return _decode(input)
+
+
+class DagJsonEncoder(json.JSONEncoder):
+    """Custom JSON encoder that handles :class:`CID` and bytes."""
+
+    def encode(self, val):
+        if isinstance(val, float):
+            # ugly, but I couldn't find a way to do this with a format string
+            return format(val).replace('e-0', 'e-')
+
+        return super().encode(val)
+
+    def default(self, val):
+        if isinstance(val, CID):
+            assert val.version in (0, 1)
+            return {'/': val.encode('base32') if val.version == 1 else val.encode()}
+        elif isinstance(val, bytes):
+            return {'/': {'bytes': b64encode(val).decode().rstrip('=')}}
+
+        return super().default(val)
+
+
+
+def encode(val):
+    """Encodes an IPLD object as DAG-JSON.
+
+    Args:
+      val: IPLD object
+
+    Returns:
+      bytes, DAG-JSON encoded object
+
+    Raises:
+      ValueError
+      :class:`json.JSONEncodeError`
+    """
+    return DagJsonEncoder(separators=(',', ':'),
+                          sort_keys=True,
+                          ensure_ascii=False,
+                          allow_nan=False,
+                          ).encode(val).encode()

@@ -1,0 +1,32 @@
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/
+
+[build-system]
+requires = ['setuptools>=61.0']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'dag-json'
+version = '0.1'
+authors = [
+    { name='Ryan Barrett', email='dag-json@ryanb.org' },
+]
+description = 'Python implemention of the IPLD DAG-JSON codec'
+readme = 'README.md'
+requires-python = '>=3.7'
+keywords = ['IPLD', 'DAG-JSON', 'codec', 'CID']
+dependencies = [
+    'multiformats>=0.2.0',
+]
+classifiers = [
+    'Programming Language :: Python :: 3',
+    'License :: Public Domain',
+    'Operating System :: OS Independent',
+    'Intended Audience :: Developers',
+    'Development Status :: 3 - Alpha',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+]
+
+[project.optional-dependencies]
+tests = [
+    'python-testmark>=1.0',
+]
