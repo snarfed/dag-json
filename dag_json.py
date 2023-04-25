@@ -6,7 +6,7 @@ https://ipld.io/specs/codecs/dag-json/spec/
 from base64 import b64decode, b64encode
 import json
 
-from multiformats import CID
+from multiformats import CID, multihash
 
 
 def decode(input):
@@ -91,3 +91,20 @@ def encode(val):
                           ensure_ascii=False,
                           allow_nan=False,
                           ).encode(val).encode()
+
+def encoded_cid(data):
+    """Generates the :class:`CID` for a DAG-JSON encoded object.
+
+    Args:
+      data: bytes, encoded DAG-JSON
+
+    Returns:
+      :class:`CID`
+
+    Raises:
+      ValueError, if data is not bytes
+    """
+    if not isinstance(data, bytes):
+        raise ValueError(f'Expected bytes, got repr(data)')
+
+    return CID('base58btc', 1, 'dag-json', multihash.digest(data, 'sha2-256'))

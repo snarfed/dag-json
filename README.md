@@ -14,16 +14,17 @@ License: This project is placed in the public domain.
 
 ## Usage
 
-The `dag_json` module has two functions, `encode` and `decode`.
-* `encode` takes any IPLD-compatible native Python object - `int`, `float`, `str`, `bool`, `list`, `bytes`, or [`multiformats.CID`](https://multiformats.readthedocs.io/en/latest/cid.html) - and returns it as DAG-JSON encoded `bytes`.
+The `dag_json` module has three functions:
 * `decode` takes DAG-JSON encoded `bytes` and returns the corresponding native Python object.
+* `encode` takes any IPLD-compatible native Python object - `int`, `float`, `str`, `bool`, `list`, `bytes`, or [`multiformats.CID`](https://multiformats.readthedocs.io/en/latest/cid.html) - and returns it as DAG-JSON encoded `bytes`.
+* `encoded_cid` takes DAG-JSON encoded `bytes` and returns its corresponding [`multiformats.CID`](https://multiformats.readthedocs.io/en/latest/cid.html).
 
 Here's example usage:
 
 ```py
 >>> from dag_json import decode, encode
 >>> from multiformats import CID
->>>
+
 >>> encoded = encode({
     'foo': 'bar',
     'data': b'hello world',
@@ -31,17 +32,24 @@ Here's example usage:
 })
 >>> encoded
 b'{"data":{"/":{"bytes":"aGVsbG8gd29ybGQ"}},"foo":"bar","link":{"/":"QmUGhP2X8xo9dsj45vqx1H6i5WqPqLqmLQsHTTxd3ke8mp"}}'
->>>
+
 >>> repr(decode(encoded))
 {
     'data': b'hello world',
     'foo': 'bar',
     'link': CID('base58btc', 0, 'dag-pb', '12205822d187bd40b04cc8ae7437888ebf844efac1729e098c8816d585d0fcc42b5b'),
 }
+
+>>> encoded_cid(encoded)
+CID('base58btc', 1, 'dag-json', '1220d7c1db350b6fda1df4ab788bffc87b24c68d05ddfb2c9ff6f2a4f9eb12236c31')
 ```
 
 
 ## Changelog
+
+### 0.2 - unreleased
+
+* Add new `encoded_cid` function.
 
 ### 0.1 - 2023-04-23
 

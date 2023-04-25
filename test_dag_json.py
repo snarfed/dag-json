@@ -17,7 +17,7 @@ import os
 from pathlib import Path
 from unittest import skip, TestCase
 
-from multiformats import CID, multibase, multihash
+from multiformats import CID, multibase
 import testmark
 
 import dag_json
@@ -35,16 +35,13 @@ for key, val in fixtures.items():
 
 def create_test_fn(test):
     def run(self):
-         input = bytes.fromhex(test['bytes']).decode()
-         # print(test)
-         decoded = dag_json.decode(input)
+         input = bytes.fromhex(test['bytes'])
+         decoded = dag_json.decode(input.decode())
          encoded = dag_json.encode(decoded)
          self.assertEqual(test['string'].rstrip(), encoded.decode())
 
-         digest = multihash.digest(encoded, 'sha2-256')
-         cid = CID('base58btc', 1, 'dag-json', digest)
          expected_cid = CID.decode(multibase.decode(test['cid'].strip()))
-         self.assertEqual(expected_cid, cid)
+         self.assertEqual(expected_cid, dag_json.encoded_cid(input))
 
     return run
 
