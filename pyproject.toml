@@ -18,7 +18,7 @@ readme = 'README.md'
 requires-python = '>=3.7'
 keywords = ['DAG-JSON', 'IPLD', 'codec', 'CID']
 dependencies = [
-    'multiformats>=0.2.0',
+    'multiformats>=0.3.1.post4',
 ]
 classifiers = [
     'Programming Language :: Python :: 3',
