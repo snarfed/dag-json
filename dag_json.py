@@ -52,7 +52,16 @@ def decode(input):
 
 
 class DagJsonEncoder(json.JSONEncoder):
-    """Custom JSON encoder that handles :class:`CID` and bytes."""
+    """Custom JSON encoder that handles :class:`CID` and bytes.
+
+    Args:
+      compact (bool): whether to encode CIDs and bytes as inline values instead
+        of full DAG-JSON dicts with ``/`` and ``bytes`` values. Defaults to
+        ``False``.
+    """
+    def __init__(self, *args, compact=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._compact = compact
 
     def encode(self, val):
         if isinstance(val, float):
@@ -64,20 +73,25 @@ class DagJsonEncoder(json.JSONEncoder):
     def default(self, val):
         if isinstance(val, CID):
             assert val.version in (0, 1)
-            return {'/': val.encode('base32') if val.version == 1 else val.encode()}
+            encoded = val.encode('base32') if val.version == 1 else val.encode()
+            return encoded if self._compact else {'/': encoded}
         elif isinstance(val, bytes):
             # Python base64 lib emits padding, IPLD DAG-JSON bytes don't
-            return {'/': {'bytes': b64encode(val).decode().rstrip('=')}}
+            encoded = b64encode(val).decode().rstrip('=')
+            return encoded if self._compact else  {'/': {'bytes': encoded}}
 
         return super().default(val)
 
 
 
-def encode(val):
+def encode(val, compact=False):
     """Encodes an IPLD object as DAG-JSON.
 
     Args:
       val: IPLD object
+      compact (bool): whether to encode CIDs and bytes as inline values instead
+        of full DAG-JSON dicts with ``/`` and ``bytes`` values. Defaults to
+        ``False``.
 
     Returns:
       bytes, DAG-JSON encoded object
@@ -86,7 +100,8 @@ def encode(val):
       ValueError
       :class:`json.JSONEncodeError`
     """
-    return DagJsonEncoder(separators=(',', ':'),
+    return DagJsonEncoder(compact=compact,
+                          separators=(',', ':'),
                           sort_keys=True,
                           ensure_ascii=False,
                           allow_nan=False,
