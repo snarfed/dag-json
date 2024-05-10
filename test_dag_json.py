@@ -28,27 +28,27 @@ fixtures = testmark.parse(Path(os.path.dirname(__file__)) / 'ipld_fixtures.md')
 # maps str name to dict with 'string', 'hexbytes', 'cid' keys
 tests = collections.defaultdict(dict)
 for key, val in fixtures.items():
-     name, codec, type_ = str(key).split('/')
-     if codec == 'dag-json':
-          tests[name][type_] = val
+    name, codec, type_ = str(key).split('/')
+    if codec == 'dag-json':
+        tests[name][type_] = val
 
 
 def create_test_fn(test):
     def run(self):
-         input = bytes.fromhex(test['bytes'])
-         decoded = dag_json.decode(input.decode())
-         encoded = dag_json.encode(decoded)
-         self.assertEqual(test['string'].rstrip(), encoded.decode())
+        input = bytes.fromhex(test['bytes'])
+        decoded = dag_json.decode(input.decode())
+        encoded = dag_json.encode(decoded)
+        self.assertEqual(test['string'].rstrip(), encoded.decode())
 
-         expected_cid = CID.decode(multibase.decode(test['cid'].strip()))
-         self.assertEqual(expected_cid, dag_json.encoded_cid(input))
+        expected_cid = CID.decode(multibase.decode(test['cid'].strip()))
+        self.assertEqual(expected_cid, dag_json.encoded_cid(input))
 
     return run
 
 
 DagJsonTest = type('DagJsonTest', (TestCase,), {
-     f'test_{name.replace("-", "_")}': create_test_fn(test)
-     for name, test in tests.items()
+    f'test_{name.replace("-", "_")}': create_test_fn(test)
+    for name, test in tests.items()
 })
 
 
@@ -74,5 +74,5 @@ class NegativeDagJsonTest(TestCase):
     TODO
     """
     def test_duplicate_map_keys(self):
-         with self.assertRaises(ValueError):
-              print(dag_json.decode('{"foo":1,"foo":2,"bar":3}'))
+        with self.assertRaises(ValueError):
+            print(dag_json.decode('{"foo":1,"foo":2,"bar":3}'))
