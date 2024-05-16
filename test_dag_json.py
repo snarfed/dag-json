@@ -55,15 +55,15 @@ DagJsonTest = type('DagJsonTest', (TestCase,), {
 class DagJsonExtraTest(TestCase):
     maxDiff = None
 
-    def test_compact(self):
+    def test_dialect_atproto(self):
         cid = 'bafkreicqpqncshdd27sgztqgzocd3zhhqnnsv6slvzhs5uz6f57cq6lmtq'
         self.assertEqual({
-            'cid': cid,
-            'bytes': 'YXNkZg',
+            'cid': {'$link': cid},
+            'bytes': {'$bytes': 'YXNkZg'},
         }, json.loads(dag_json.encode({
             'cid': CID.decode(cid),
             'bytes': b'asdf',
-        }, compact=True)))
+        }, dialect='atproto')))
 
 
 @skip

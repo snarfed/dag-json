@@ -50,7 +50,7 @@ CID('base58btc', 1, 'dag-json', '1220d7c1db350b6fda1df4ab788bffc87b24c68d05ddfb2
 ### 0.2 - unreleased
 
 * Add new `encoded_cid` function.
-* Add new `compact` kwarg to `encode`, `DagJsonEncoder` to encode CIDs and bytes as inline values instead of dicts with `/` and `bytes` fields.
+* Add new `dialect` kwarg to `encode`, `DagJsonEncoder`. Currently only supports one value, `'atproto'`, to encode CIDs and bytes with `$link` and `$bytes` keys [according to the AT Protocol data model](https://atproto.com/specs/data-model).
 
 ### 0.1 - 2023-04-23
 

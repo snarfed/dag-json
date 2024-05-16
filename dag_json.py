@@ -55,13 +55,13 @@ class DagJsonEncoder(json.JSONEncoder):
     """Custom JSON encoder that handles :class:`CID` and bytes.
 
     Args:
-      compact (bool): whether to encode CIDs and bytes as inline values instead
-        of full DAG-JSON dicts with ``/`` and ``bytes`` values. Defaults to
-        ``False``.
+      dialect (str): optional dialect to use instead of standard DAG-JSON.
+        Currently supports one value, ``'atproto'``, for AT Protocol:
+        https://atproto.com/specs/data-model
     """
-    def __init__(self, *args, compact=False, **kwargs):
+    def __init__(self, *args, dialect=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self._compact = compact
+        self._dialect = dialect
 
     def encode(self, val):
         if isinstance(val, float):
@@ -74,24 +74,26 @@ class DagJsonEncoder(json.JSONEncoder):
         if isinstance(val, CID):
             assert val.version in (0, 1)
             encoded = val.encode('base32') if val.version == 1 else val.encode()
-            return encoded if self._compact else {'/': encoded}
+            return ({'$link': encoded} if self._dialect == 'atproto'
+                    else {'/': encoded})
         elif isinstance(val, bytes):
             # Python base64 lib emits padding, IPLD DAG-JSON bytes don't
             encoded = b64encode(val).decode().rstrip('=')
-            return encoded if self._compact else  {'/': {'bytes': encoded}}
+            return ({'$bytes': encoded} if self._dialect == 'atproto'
+                    else  {'/': {'bytes': encoded}})
 
         return super().default(val)
 
 
 
-def encode(val, compact=False):
+def encode(val, dialect=None):
     """Encodes an IPLD object as DAG-JSON.
 
     Args:
       val: IPLD object
-      compact (bool): whether to encode CIDs and bytes as inline values instead
-        of full DAG-JSON dicts with ``/`` and ``bytes`` values. Defaults to
-        ``False``.
+      dialect (str): optional dialect to use instead of standard DAG-JSON.
+        Currently supports one value, ``'atproto'``, for AT Protocol:
+        https://atproto.com/specs/data-model
 
     Returns:
       bytes, DAG-JSON encoded object
@@ -100,7 +102,7 @@ def encode(val, compact=False):
       ValueError
       :class:`json.JSONEncodeError`
     """
-    return DagJsonEncoder(compact=compact,
+    return DagJsonEncoder(dialect=dialect,
                           separators=(',', ':'),
                           sort_keys=True,
                           ensure_ascii=False,
