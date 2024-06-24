@@ -97,5 +97,5 @@ Here's how to package, test, and ship a new release.
 1. Upload to [pypi.org](https://pypi.org/)!
 
     ```sh
-    twine upload dist/dag_json-$ver.tar.gz dist/dag-json-$ver-py3-none-any.whl
+    twine upload dist/dag_json-$ver.tar.gz dist/dag_json-$ver-py3-none-any.whl
     ```
