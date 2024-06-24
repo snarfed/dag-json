@@ -22,7 +22,7 @@ The `dag_json` module has three functions:
 Here's example usage:
 
 ```py
->>> from dag_json import decode, encode
+>>> from dag_json import decode, encode, encoded_cid
 >>> from multiformats import CID
 
 >>> encoded = encode({
@@ -47,7 +47,7 @@ CID('base58btc', 1, 'dag-json', '1220d7c1db350b6fda1df4ab788bffc87b24c68d05ddfb2
 
 ## Changelog
 
-### 0.2 - unreleased
+### 0.2 - 2024-06-24
 
 * Add new `encoded_cid` function.
 * Add new `dialect` kwarg to `encode`, `DagJsonEncoder`. Currently only supports one value, `'atproto'`, to encode CIDs and bytes with `$link` and `$bytes` keys [according to the AT Protocol data model](https://atproto.com/specs/data-model).
@@ -65,26 +65,26 @@ Here's how to package, test, and ship a new release.
 
     ```sh
     source local/bin/activate.csh
-    python3 -m unittest discover
+    python -m unittest discover
     ```
 1. Bump the version number in `pyproject.toml`. `git grep` the old version number to make sure it only appears in the changelog. Change the current changelog entry in `README.md` for this new version from _unreleased_ to the current date.
 1. `git commit -am 'release vX.Y'`
 1. Upload to [test.pypi.org](https://test.pypi.org/) for testing.
 
     ```sh
-    python3 -m build
+    python -m build
     setenv ver X.Y
-    twine upload -r pypitest dist/dag-json-$ver*
+    twine upload -r pypitest dist/dag_json-$ver*
     ```
 1. Install from test.pypi.org.
 
     ```sh
     cd /tmp
-    python3 -m venv local
+    python -m venv local
     source local/bin/activate.csh
-    pip3 uninstall dag-json # make sure we force pip to use the uploaded version
-    pip3 install --upgrade pip
-    pip3 install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple dag-json==$ver
+    pip uninstall dag-json # make sure we force pip to use the uploaded version
+    pip install --upgrade pip
+    pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple dag-json==$ver
     ```
 1. [Run the example code above](#usage) to test that the code loads and runs.
 1. Tag the release in git. In the tag message editor, delete the generated comments at bottom, leave the first line blank (to omit the release "title" in github), put `### Notable changes` on the second line, then copy and paste this version's changelog contents below it.
@@ -97,5 +97,5 @@ Here's how to package, test, and ship a new release.
 1. Upload to [pypi.org](https://pypi.org/)!
 
     ```sh
-    twine upload dist/dag-json-$ver.tar.gz dist/dag-json-$ver-py3-none-any.whl
+    twine upload dist/dag_json-$ver.tar.gz dist/dag-json-$ver-py3-none-any.whl
     ```
