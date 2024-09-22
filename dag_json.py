@@ -9,11 +9,14 @@ import json
 from multiformats import CID, multihash
 
 
-def decode(input):
+def decode(input, dialect=None):
     """Decodes DAG-JSON encoded data.
 
     Args:
       input: bytes, str, or decoded JSON object
+      dialect (str): optional dialect to use instead of standard DAG-JSON.
+        Currently supports one value, ``'atproto'``, for AT Protocol:
+        https://atproto.com/specs/data-model
 
     Returns:
       decoded IPLD object
@@ -29,16 +32,18 @@ def decode(input):
         input = json.loads(input)
 
     def _decode(input):
-        if isinstance(input, dict):
-            if input.keys() == set(('/',)):
-                if isinstance(input['/'], str):
-                    # link
-                    return CID.decode(input['/'])
-                elif (isinstance(input['/'], dict) and
-                      input['/'].keys() == set(('bytes',))):
-                    # IPLD DAG-JSON base64-encoded bytes don't have padding, but
-                    # Python base64 lib expects it
-                    return b64decode(input['/']['bytes'] + '==')
+        if input and isinstance(input, dict):
+            key, val = next(iter(input.items()))
+            if ((dialect == 'atproto' and key == '$link')
+                    or (key == '/' and isinstance(val, str))):
+                # CID link
+                return CID.decode(val)
+            elif dialect == 'atproto' and key == '$bytes':
+                # IPLD DAG-JSON base64-encoded bytes don't have padding, but
+                # Python base64 lib expects it
+                return b64decode(val + '==')
+            elif key == '/' and isinstance(val, dict) and val.keys() == set(['bytes']):
+                return b64decode(val['bytes'] + '==')
 
             # normal mapping
             return {k: _decode(v) for k, v in input.items()}

@@ -55,16 +55,23 @@ DagJsonTest = type('DagJsonTest', (TestCase,), {
 class DagJsonExtraTest(TestCase):
     maxDiff = None
 
-    def test_dialect_atproto(self):
-        cid = 'bafkreicqpqncshdd27sgztqgzocd3zhhqnnsv6slvzhs5uz6f57cq6lmtq'
-        self.assertEqual({
-            'cid': {'$link': cid},
-            'bytes': {'$bytes': 'YXNkZg'},
-        }, json.loads(dag_json.encode({
-            'cid': CID.decode(cid),
-            'bytes': b'asdf',
-        }, dialect='atproto')))
+    CID_STR = 'bafkreicqpqncshdd27sgztqgzocd3zhhqnnsv6slvzhs5uz6f57cq6lmtq'
+    DECODED = {
+        'cid': CID.decode(CID_STR),
+        'bytes': b'asdf',
+    }
+    ENCODED = {
+        'cid': {'$link': CID_STR},
+        'bytes': {'$bytes': 'YXNkZg'},
+    }
 
+    def test_encode_dialect_atproto(self):
+        self.assertEqual(self.ENCODED,
+                         json.loads(dag_json.encode(self.DECODED, dialect='atproto')))
+
+    def test_encode_dialect_atproto(self):
+        self.assertEqual(self.DECODED,
+                         dag_json.decode(self.ENCODED, dialect='atproto'))
 
 @skip
 class NegativeDagJsonTest(TestCase):

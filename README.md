@@ -47,6 +47,10 @@ CID('base58btc', 1, 'dag-json', '1220d7c1db350b6fda1df4ab788bffc87b24c68d05ddfb2
 
 ## Changelog
 
+### 0.3 - unreleased
+
+* Add new `dialect` kwarg to `decode` to match `encode`.
+
 ### 0.2 - 2024-06-24
 
 * Add new `encoded_cid` function.
