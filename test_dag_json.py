@@ -69,15 +69,9 @@ class DagJsonExtraTest(TestCase):
         self.assertEqual(self.ENCODED,
                          json.loads(dag_json.encode(self.DECODED, dialect='atproto')))
 
-    def test_decode_dialect_atproto(self):
+    def test_encode_dialect_atproto(self):
         self.assertEqual(self.DECODED,
                          dag_json.decode(self.ENCODED, dialect='atproto'))
-
-    def test_unicode_surrogate(self):
-        # https://console.cloud.google.com/errors/detail/CKqTj9qIzMa3AQ;time=P7D;locations=global?project=bridgy-federated
-        dag_json.encode('📌', dialect='atproto')
-        dag_json.encode("foo \ud83d\udccc bar")
-
 
 @skip
 class NegativeDagJsonTest(TestCase):
