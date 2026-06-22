@@ -17,9 +17,6 @@ description = 'Python implementation of the IPLD DAG-JSON codec'
 readme = 'README.md'
 requires-python = '>=3.7'
 keywords = ['DAG-JSON', 'IPLD', 'codec', 'CID']
-dependencies = [
-    'multiformats>=0.3.1.post4',
-]
 classifiers = [
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.7',
@@ -30,8 +27,11 @@ classifiers = [
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
-[project.urls]
-'Homepage' = 'https://github.com/snarfed/dag-json'
+urls = {Homepage = 'https://github.com/snarfed/dag-json'}
+
+dependencies = [
+    'multiformats>=0.3.1.post4',
+]
 
 [project.optional-dependencies]
 tests = [
